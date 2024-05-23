@@ -1,7 +1,5 @@
 import streamlit as st
 
-
-
 # 預設用戶名和密碼（在真實應用中應使用更安全的方法存儲和管理用戶數據）
 USER_CREDENTIALS = {'admin': 'password'}
 
@@ -41,8 +39,6 @@ def main():
         new_password = st.text_input('新密碼', type='password')
         if st.button('註冊'):
             if register(new_username, new_password):
-                new_username = st.text_input('新用戶名', value='')
-                new_password = st.text_input('新密碼', type='password', value='')
                 st.success('註冊成功，現在可以登入了')
             else:
                 st.error('用戶名已存在，請選擇其他用戶名')
