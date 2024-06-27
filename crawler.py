@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import urllib.parse
+from timer import timing_decorator
 
 # Base URL of the exam papers page
 base_url = "https://www.ceec.edu.tw/xmfile?xsmsid=0J052424829869345634"
@@ -11,6 +12,7 @@ download_dir = "all_files"
 if not os.path.exists(download_dir):
     os.makedirs(download_dir)
 
+@timing_decorator
 def download_pdfs(url):
     # Send HTTP GET request
     response = requests.get(url)
@@ -18,6 +20,8 @@ def download_pdfs(url):
 
     # Parse the webpage content
     soup = BeautifulSoup(response.text, 'html.parser')
+
+
 
     # Find all links to exam papers (excluding answer sheets and Word files)
     links = soup.find_all('a', href=True)
@@ -29,6 +33,11 @@ def download_pdfs(url):
         pdf_name_encoded = pdf_url.split('/')[-1]
         pdf_name = urllib.parse.unquote(pdf_name_encoded)  # Decode URL-encoded filename
         pdf_response = requests.get(pdf_url)
+
+            # Check if the page contains content for the year 95
+        if "94" in pdf_name:
+            print("Reached the year 95, stopping download.")
+            return
         
         # Save PDF file
         with open(os.path.join(download_dir, pdf_name), 'wb') as pdf_file:
